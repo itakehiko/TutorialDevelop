@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @Controller
 @RequestMapping("user")
 public class UserController {
@@ -42,6 +44,12 @@ public class UserController {
     @PostMapping("/update/{id}/")
     public String postUser(User user) {
         service.saveUser(user);
+        return "redirect:/user/list";
+    }
+
+    @PostMapping(path = "list", params = "deleteRun")
+    public String deleteRun(@RequestParam(name = "idck") Set<Integer> idck, Model model) {
+        service.deleteUser(idck);
         return "redirect:/user/list";
     }
 }
