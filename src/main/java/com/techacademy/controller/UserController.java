@@ -4,6 +4,8 @@ import com.techacademy.entity.User;
 import com.techacademy.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -30,7 +32,10 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String postRegister(User user) {
+    public String postRegister(@Validated User user, BindingResult res, Model model) {
+        if (res.hasErrors()) {
+            return getRegister(user);
+        }
         service.saveUser(user);
         return "redirect:/user/list";
     }
