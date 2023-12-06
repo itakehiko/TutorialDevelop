@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,6 +40,33 @@ class UserControllerTest {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(springSecurity()).build();
+    }
+
+    @Test
+    @DisplayName("User一覧画面")
+    @WithMockUser
+    void testGetList() throws Exception {
+        MvcResult result = mockMvc.perform(get("/user/list"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("userlist"))
+                .andExpect(model().hasNoErrors())
+                .andExpect(view().name("user/list"))
+                .andReturn();
+
+         List<User> userList = (List<User>) result.getModelAndView().getModel().get("userlist");
+         assertEquals(userList.size(), 3);
+
+         User user1 = userList.get(0);
+         assertEquals(user1.getId(), 1);
+         assertEquals(user1.getName(), "キラメキ太郎");
+
+        User user2 = userList.get(1);
+        assertEquals(user2.getId(), 2);
+        assertEquals(user2.getName(), "キラメキ次郎");
+
+        User user3 = userList.get(2);
+        assertEquals(user3.getId(), 3);
+        assertEquals(user3.getName(), "キラメキ花子");
     }
 
     @Test
